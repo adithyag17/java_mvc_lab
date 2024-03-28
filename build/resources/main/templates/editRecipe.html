@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Recipe</title>
+</head>
+<body>
+
+<h1>Edit Recipe</h1>
+
+<form th:action="@{/recipes/edit/{id}(id=${recipe.id})}" method="post" th:object="${recipe}">
+    <label>Title: <input type="text" th:field="*{title}" required/></label><br/>
+    <label>Cooking Time: <input type="number" th:field="*{cookingTime}" required/></label><br/>
+    <label>Difficulty Level: <input type="text" th:field="*{difficultyLevel}" required/></label><br/>
+    <label>Average Rating: <input type="number" step="0.1" th:field="*{averageRating}" required/></label><br/>
+    
+    <h3>Ingredients</h3>
+    <ul>
+        <li th:each="ingredient : *{ingredients}">
+            <input type="text" th:field="*{ingredients[__${ingredientStat.index}__]}" placeholder="Ingredient" required/>
+        </li>
+    </ul>
+    <button type="button" onclick="addIngredient()">Add Ingredient</button><br/>
+    
+    <h3>Instructions</h3>
+    <ul>
+        <li th:each="instruction : *{instructions}">
+            <input type="text" th:field="*{instructions[__${instructionStat.index}__]}" placeholder="Instruction" required/>
+        </li>
+    </ul>
+    <button type="button" onclick="addInstruction()">Add Instruction</button><br/>
+    
+    <input type="submit" value="Update Recipe"/>
+</form>
+
+<script th:inline="javascript">
+    function addIngredient() {
+        var newIngredient = '<li><input type="text" th:field="*{ingredients[__${#numbers.sequence(0, recipe.ingredients.size()-1).size()}__]}" placeholder="Ingredient" required/></li>';
+        document.querySelector('ul:nth-of-type(1)').insertAdjacentHTML('beforeend', newIngredient);
+    }
+
+    function addInstruction() {
+        var newInstruction = '<li><input type="text" th:field="*{instructions[__${#numbers.sequence(0, recipe.instructions.size()-1).size()}__]}" placeholder="Instruction" required/></li>';
+        document.querySelector('ul:nth-of-type(2)').insertAdjacentHTML('beforeend', newInstruction);
+    }
+</script>
+
+</body>
+</html>
